@@ -1,5 +1,6 @@
 package entries.entity
 
+import com.typewritermc.engine.paper.entry.entity.EntityIdentity
 import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
@@ -21,6 +22,7 @@ import kr.toxicity.model.api.tracker.ModelScaler
 import kr.toxicity.model.api.tracker.TrackerUpdateAction
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -39,8 +41,7 @@ class BetterModelEntity(
     private val disposed = AtomicBoolean(false)
     private val hitbox = InteractionEntity(player, hitboxWidth, hitboxHeight)
 
-    override val entityId: Int
-        get() = fakeEntityId
+    override val identity: EntityIdentity = EntityIdentity(fakeEntityId, UUID.randomUUID())
 
     override val state: EntityState
         get() = EntityState(height(), speed())

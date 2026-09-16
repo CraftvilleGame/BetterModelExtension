@@ -38,7 +38,7 @@ typewriter {
         name = "BetterModel"
         shortDescription = "Simple usage of BetterModel for NPCs"
         description = "Adding the capability to use BetterModel for non player characters in your quests. I need atleast 100 characters blablablalbal"
-        engineVersion = "0.9.0-beta-175"
+        engineVersion = "0.9.0-beta-177"
         channel = com.typewritermc.moduleplugin.ReleaseChannel.BETA
 
         paper {

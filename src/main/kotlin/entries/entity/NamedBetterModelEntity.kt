@@ -2,7 +2,7 @@ package entries.entity
 
 import com.typewritermc.core.entries.Ref
 import com.typewritermc.core.utils.point.Vector
-import com.typewritermc.engine.paper.entry.entity.DisplayNameProperty
+import com.typewritermc.engine.paper.entry.entity.EntityIdentity
 import com.typewritermc.engine.paper.entry.entity.EntityState
 import com.typewritermc.engine.paper.entry.entity.FakeEntity
 import com.typewritermc.engine.paper.entry.entity.PositionProperty
@@ -14,6 +14,7 @@ import com.typewritermc.engine.paper.extensions.placeholderapi.parsePlaceholders
 import com.typewritermc.engine.paper.utils.Color
 import com.typewritermc.engine.paper.utils.isFloodgate
 import com.typewritermc.engine.paper.utils.replaceTagPlaceholders
+import com.typewritermc.entity.entries.data.minecraft.CustomNameProperty
 import com.typewritermc.entity.entries.data.minecraft.display.BillboardConstraintProperty
 import com.typewritermc.entity.entries.data.minecraft.display.InterpolationDurationProperty
 import com.typewritermc.entity.entries.data.minecraft.display.TranslationProperty
@@ -31,7 +32,7 @@ import java.time.Duration
 
 class NamedBetterModelEntity(
     player: Player,
-    var displayName: Var<String>,
+    private val displayName: Var<String>,
     modelId: Var<String>,
     defaultAnimationSettings: DefaultAnimationSettings,
     definition: Ref<out EntityDefinitionEntry>,
@@ -41,9 +42,10 @@ class NamedBetterModelEntity(
     private val baseEntity = BetterModelEntity(player, modelId, defaultAnimationSettings, hitboxWidth, hitboxHeight)
     private val hologram = TextDisplayEntity(player)
     private val indicatorEntity = InteractionIndicatorEntity(player, definition)
+    private var customName: String? = null
 
-    override val entityId: Int
-        get() = baseEntity.entityId
+    override val identity: EntityIdentity
+        get() = EntityIdentity(baseEntity.entityId, baseEntity.uuid)
 
     override val state: EntityState
         get() = baseEntity.state
@@ -69,8 +71,8 @@ class NamedBetterModelEntity(
         baseEntity.consumeProperties(properties)
         properties.forEach { property ->
             when (property) {
-                is DisplayNameProperty -> {
-                    displayName = property.displayName
+                is CustomNameProperty -> {
+                    customName = property.customName
                 }
 
                 is PositionProperty -> {
@@ -100,11 +102,11 @@ class NamedBetterModelEntity(
 
     private fun hologram(): String {
         val other = property(LinesProperty::class)?.lines ?: ""
-        val displayName = this.displayName
+        val displayName = customName ?: displayName.get(player)
 
         return namePlate.parsePlaceholders(player).replaceTagPlaceholders(
             "other" to other,
-            "display_name" to displayName.get(player).parsePlaceholders(player),
+            "display_name" to displayName.parsePlaceholders(player),
         ).trim()
     }
 
