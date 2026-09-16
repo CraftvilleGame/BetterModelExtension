@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.10"
-    id("com.typewritermc.module-plugin") version "2.1.0"
+    id("com.typewritermc.module-plugin") version "2.2.0"
 }
 
 group = "nl.craftville.extension"
